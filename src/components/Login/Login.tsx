@@ -16,6 +16,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [change, setChange] = useState<any>();
   const [swapPassword, setSwapPassword] = useState(false);
+  const [themeStatus, setThemeStatus] = useState(false);
   const [loader, setLoader] = useState(false);
   const themeBuilder = useSelector((state: RootState) => state.block.theme);
   const handleToggleView = () => {
