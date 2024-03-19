@@ -19,6 +19,7 @@ const Login = () => {
   const [themeStatus, setThemeStatus] = useState(false);
   const [loader, setLoader] = useState(false);
   const themeBuilder = useSelector((state: RootState) => state.block.theme);
+  const dispatch = useDispatch();
   const handleToggleView = () => {
     setIsForgotPassword((prev) => !prev);
   };
