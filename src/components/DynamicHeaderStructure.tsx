@@ -13,6 +13,8 @@ function DynamicHeaderStructure({
   filter,
   button,
   searchPlaceHolder,
+  setSearchValue,
+  searchValue,
 }: any) {
   const themeBuilder = useSelector((state: RootState) => state.block.theme);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -32,7 +34,10 @@ function DynamicHeaderStructure({
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
+  const handleChange = (event: any) => {
+    setSearchValue(event.target.value);
+    console.log(event.target.value);
+  };
   return (
     <div className="main-dashboard">
       {isMobile && (
@@ -156,8 +161,10 @@ function DynamicHeaderStructure({
                 <div className="d-flex">
                   <input
                     type="search"
-                    placeholder="Search by name"
+                    placeholder={searchPlaceHolder}
                     className="search-icon form-control search-bar"
+                    value={searchValue}
+                    onChange={handleChange}
                   />
                 </div>
               )}

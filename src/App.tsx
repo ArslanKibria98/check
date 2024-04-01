@@ -1,6 +1,6 @@
 import { RouterProvider } from "react-router-dom";
 import { store, persistor } from "./redux/store";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { router } from "./Routes/path";
 import { ThemeProvider } from "styled-components";
@@ -8,8 +8,12 @@ import { theme } from "antd";
 import { Toaster } from "react-hot-toast";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./components/i18n";
+import { authSlice } from "./redux/apis/apisSlice";
+import { themeStyle } from "./components/Config/Theme";
 
 const App = () => {
+  // const dispatch = useDispatch();
+  // dispatch(authSlice.actions.setTheme( {themeStyle} ));
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />

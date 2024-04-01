@@ -70,11 +70,11 @@ const TableView = ({ header, data, apiHeader }: any) => {
     //   },
     // },
   };
-  const hasMeaningfulData = data.some((item: any) =>
-    Object.values(item).some((value) => value !== "")
-  );
+  // const hasMeaningfulData = data.some((item: any) =>
+  //   Object.values(item).some((value) => value !== "")
+  // );
 
-  const noDataComponent = hasMeaningfulData ? null : (
+  const noDataComponent = data ? null : (
     <div style={{ textAlign: "center", padding: "20px", color: "red" }}>
       No data available
     </div>

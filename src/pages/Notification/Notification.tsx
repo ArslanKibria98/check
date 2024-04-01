@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { Dropdown, Tab, Tabs } from "react-bootstrap";
 import Email from "./Email";
+import Push from "./Push";
 import Sms from "./Sms";
 
 const NotificationTable = () => {
@@ -20,7 +21,7 @@ const NotificationTable = () => {
     {
       title: "Push",
       key: "Push",
-      folder: "",
+      folder: <Push/>,
     },
   ];
   return (
