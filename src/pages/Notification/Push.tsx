@@ -18,6 +18,7 @@ import Switch from "react-switch";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { Select } from "antd";
+import toast from "react-hot-toast";
 
 const Push = () => {
   const [create, setCreate] = useState(false);
@@ -44,15 +45,30 @@ const Push = () => {
         console.log(error);
       });
   };
-  const findOneData = () => {
-    findOne(searchValue)
-      .then((response) => {
-        console.log(response, "resposne");
-        setAllPushNotificaions(response?.data?.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const onSearchHandle = () => {
+    // setIsQueryChange(true);
+    if (searchValue) {
+      console.log(allPushNotificaions, searchValue);
+      const title = allPushNotificaions.filter((item: any) =>
+        item.templateName.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      setAllPushNotificaions(title);
+
+      // setSnapShot(searchWalletAddress);
+      // setShowWalletModal(false);
+      // const matchingIndices = reSortedArray.reduce(
+      //   (acc: number[], item: any, index: number) => {
+      //     if (item.wallet.includes(e.target.value)) {
+      //       acc.push(index);
+      //     }
+      //     return acc;
+      //   },
+      //   []
+      // );
+    } else {
+      getAllPush();
+      setSearchValue("");
+    }
   };
   useEffect(() => {
     {
@@ -60,7 +76,7 @@ const Push = () => {
     }
 
     {
-      searchValue && findOneData();
+      searchValue && onSearchHandle();
     }
   }, [searchValue]);
   const handleToggleChange = (index: any, e: any) => {
@@ -85,12 +101,12 @@ const Push = () => {
     },
     {
       name: "Status",
-      selector: (row: { status: any }) => row.status,
+      selector: (row: { action: any }) => row.action.status,
       cell: (row: any, index: any) => (
         <div>
           <Switch
             onChange={(e: any) => handleToggleChange(index, row)}
-            checked={row.status ? row.status : false}
+            checked={row.action.status ? row.action.status : false}
             checkedIcon={false}
             uncheckedIcon={false}
             onColor="#004D72" // Adjust the color when the switch is on
@@ -150,7 +166,7 @@ const Push = () => {
         templateName: item.templateName ? item.templateName : "-",
         receiver: item.receiver ? item.receiver : "-",
         content: contentHTML,
-        status: item.status,
+        status: item,
         action: item,
       };
     });
@@ -163,13 +179,16 @@ const Push = () => {
       let response = await createPushNotification(formField);
       if (response) {
         console.log(response);
+        toast.success(`Sucessfully created`);
       }
     } catch (e: any) {
       console.log(e);
     }
   };
   const updateHandleSubmitButton = async (formField: any) => {
+    console.log(formField);
     formField.templateCode = "Test";
+    formField.id = initialUpdateData.id;
     formField.message = messgaeContent;
     formField.messageArabic = messgaeContentArabic;
     console.log(formField, "updateformInfo");
@@ -177,6 +196,8 @@ const Push = () => {
       let response = await updatePushNotification(formField);
       if (response) {
         console.log(response);
+        toast.success(`Sucessfully updated`);
+        getAllPush();
       }
     } catch (e: any) {
       console.log(e);
@@ -188,8 +209,9 @@ const Push = () => {
     setMessgaeContent(editorData);
   };
   const changeStatus = (data: any) => {
-    console.log(data.action, "change Data");
+    console.log(data, "change Data");
     data.action.status = data.action.status == true ? false : true;
+    console.log(data, "change Data");
     const status = {
       id: data.action.id,
       status: data.action.status,
@@ -197,8 +219,9 @@ const Push = () => {
     getPushChangeStatus(status)
       .then((response) => {
         console.log(response, "resposne");
-        setAllPushNotificaions(response?.data?.data);
-        console.log(allPushNotificaions, "allPushNotificaions");
+        setShowPopup(false);
+        toast.success(`Sucessfully status changed`);
+        allPushInfo();
       })
       .catch((error) => {
         console.log(error);
@@ -209,6 +232,7 @@ const Push = () => {
     editorData = editor.getData(event);
     setMessgaeContentArabic(editorData);
   };
+
   const CategoryData: any = {
     Manual: "1",
     Automatic: "2",
@@ -251,7 +275,7 @@ const Push = () => {
       <div className="cs-table">
         <DynamicHeaderStructure
           button={button}
-          searchPlaceHolder={"Search by Id"}
+          searchPlaceHolder={"Search by Template Name"}
           setSearchValue={setSearchValue}
           searchValue={searchValue}
         />
@@ -260,7 +284,6 @@ const Push = () => {
           <Modal.Header closeButton>
             <Modal.Title>Create New Push</Modal.Title>
           </Modal.Header>
-
           <Formik
             initialValues={{
               templateCode: "",
@@ -478,7 +501,6 @@ const Push = () => {
             }}
           </Formik>
         </Modal>
-
         <Modal show={update} onHide={() => setUpdate(false)} size="xl">
           <Modal.Header closeButton>
             <Modal.Title>Update Push</Modal.Title>
