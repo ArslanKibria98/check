@@ -22,8 +22,8 @@ const TableView = ({ header, data, apiHeader }: any) => {
         paddingRight: "8px",
         justifyContent: "center",
         alignItems: "center",
-        background: themeBuilder?.table?.backgroundColor,
-        color: themeBuilder?.table?.headingColor,
+        background: "rgba(160, 160, 160, 1)",
+        color: "rgba(252, 252, 252, 1)",
       },
     },
     cells: {

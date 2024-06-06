@@ -45,7 +45,7 @@ const DasbhboardHeader = () => {
             className="col-md-6 navbar-brand"
             style={{ color: themeBuilder?.color?.headingTextColor }}
           >
-            Welcome !
+            Welcome, Super Admin
           </h2>
 
           <div className="d-flex col-md-6 justify-content-end ">
@@ -67,8 +67,8 @@ const DasbhboardHeader = () => {
                   height={"40px"}
                 />
               </div>
-              Super Admin
-              <FaAngleDown />
+              {/* Super Admin
+              <FaAngleDown /> */}
             </div>
           </div>
         </div>

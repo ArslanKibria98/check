@@ -12,7 +12,8 @@ import Loader from "../Loader/Loader";
 const DasbhboardSidebar = () => {
   const dispatch = useDispatch();
   const themeBuilder = useSelector((state: RootState) => state.block.theme);
-  const [activeBar, setActiveBar] = useState();
+  const [activeBar, setActiveBar] = useState<string | null>(null);
+  const [activeSubBar, setActiveSubBar] = useState<string | null>(null);
   const [sidebarLinksApi, setSidebarLinksApi] = useState([]);
   const [sidebarLinksApiCompliance, setSidebarLinksApiCompliance] = useState(
     []
@@ -36,7 +37,6 @@ const DasbhboardSidebar = () => {
           res.data.data.structure.sidebar.sidebarwithcompliance;
         const dashboard = sidebarData[0]?.dashboard || {};
         const complianceDashboard = sidebarData[1]?.comlianceDashboard || {};
-
         const notification = sidebarData[2]?.notification || {};
         const applicationBoard = sidebarData[3]?.application?.board || [];
         setTable(dashboard.table?.header || []);
@@ -66,90 +66,109 @@ const DasbhboardSidebar = () => {
       setLoading(false);
     }
   };
-  const sidebarItems = [{ label: "Notifications", Link: "notification" }];
+
+  const sidebarItems = [
+    { label: "Dashboard", Link: "dashboard", img: Images.dashboardIcon },
+
+    {
+      label: "ACM",
+      Link: "acm",
+      img: Images.customerManagement,
+      menu: [
+        { label: "Employees", Link: "employees" },
+        { label: "Manage Roles", Link: "role" },
+        { label: "Manage Permissions", Link: "permissions" },
+      ],
+    },
+    {
+      label: "Department Management",
+      Link: "acm",
+      img: Images.customerManagement,
+      menu: [
+        { label: "Department", Link: "all-departments" },
+        { label: "Department Permissions", Link: "permissions" },
+      ],
+    },
+  ];
 
   // useEffect(() => {
   //   sidebarmenu();
   // }, []);
-  const handleRetry = () => {
-    setFullscreenError(null);
-    // sidebarmenu();
-  };
+
+  // const handleRetry = () => {
+  //   setFullscreenError(null);
+  //   sidebarmenu();
+  // };
+
   const onSmash = (item: any) => {
     setActiveBar(item);
-    console.log(item, "item Check");
-    // Update the links when Contact is clicked
-    {
-      item == "Compliance Dashboard"
-        ? setSidebarLinksApi(sidebarLinksApiCompliance)
-        : setSidebarLinksApi(sidebarLinks);
-    }
+    setActiveSubBar(null);
+    item === "Compliance Dashboard"
+      ? setSidebarLinksApi(sidebarLinksApiCompliance)
+      : setSidebarLinksApi(sidebarLinks);
   };
-  const GlobalStyle = createGlobalStyle`
-  .menu-items{
-    background:${themeBuilder?.sideBarmenuBackgroundColor}!important;
-    color:${themeBuilder?.sidebarTextColor}!important;
-  }
-  .css-1654oxy > .ps-menu-button{
-    background:${themeBuilder?.table?.backgroundColor}!important;
-  }
-  .ps-menu-button:hover {
-    background:${themeBuilder?.table?.backgroundColor}!important;
-  }
-  .active{
-    .css-1tqrhto >.ps-menu-button{
-    background:${themeBuilder?.table?.backgroundColor}!important;
-    color:#fff!important;
-    }
-  }
-  `;
-  const renderSubmenu = (item: any) => (
-    <>
-      <div className="menu-items">
-        <SubMenu
-          prefix={
-            <img src={item.img} style={{ background: "none", color: "#fff" }} />
-          }
-          key={item.label}
-          label={item.label}
-        >
-          <>
-            {item.menu.map((submenuItem: any, subIndex: any) => (
-              <Link
-                to={`${submenuItem.Link}`}
-                style={{
-                  color: "#fff",
-                  textDecoration: "none",
-                  fontSize: "12px",
-                }}
-                className={submenuItem.subMenu === activeBar ? "active" : ""}
-              >
-                <MenuItem
-                  key={subIndex}
-                  style={{
-                    fontSize: "12px",
-                    background: themeBuilder?.sideBarmenuBackgroundColor,
-                    color: themeBuilder?.sidebarTextColor,
-                  }}
-                  // onClick={() => {
-                  //   dispatch(authSlice.actions.toggleSidebar());
-                  //   onSmash(submenuItem.subMenu);
-                  // }}
-                >
-                  <Link to={item.Link} style={{ color: "#000000" }}>
-                    {item.label}
-                  </Link>
 
-                  {/* {submenuItem.subMenu} */}
-                </MenuItem>
-              </Link>
-            ))}
-          </>
-          {/* )} */}
-        </SubMenu>
-      </div>
-    </>
+  const GlobalStyle = createGlobalStyle`
+    .menu-items{
+      background:${themeBuilder?.sideBarmenuBackgroundColor}!important;
+      color:${themeBuilder?.sidebarTextColor}!important;
+    }
+    .css-1654oxy > .ps-menu-button{
+      background:${themeBuilder?.table?.backgroundColor}!important;
+    }
+    .ps-menu-button:hover {
+      background:${themeBuilder?.table?.backgroundColor}!important;
+    }
+    .active {
+      .css-1tqrhto > .ps-menu-button {
+        background:${themeBuilder?.table?.backgroundColor}!important;
+        color:#fff!important;
+      }
+    }
+  `;
+
+  const renderSubmenu = (item: any) => (
+    <div className="menu-items" key={item.label}>
+      <SubMenu
+        prefix={
+          <img
+            src={item.img}
+            style={{ background: "none", color: "#fff" }}
+            width={20}
+            height={20}
+          />
+        }
+        label={item.label}
+        onClick={() => setActiveBar(item.label)}
+      >
+        {item.menu.map((submenuItem: any, subIndex: any) => (
+          <Link
+            to={`${submenuItem.Link}`}
+            style={{
+              color: "#fff",
+              textDecoration: "none",
+              fontSize: "12px",
+            }}
+            className={submenuItem.label === activeSubBar ? "active" : ""}
+            key={subIndex}
+          >
+            <MenuItem
+              style={{
+                fontSize: "12px",
+                fontWeight: "400",
+                color: "#000000",
+                textDecoration: "none",
+              }}
+              onClick={() => setActiveSubBar(submenuItem.label)}
+            >
+              {submenuItem.label}
+            </MenuItem>
+          </Link>
+        ))}
+      </SubMenu>
+    </div>
   );
+
   return (
     <>
       <div>
@@ -163,55 +182,49 @@ const DasbhboardSidebar = () => {
           collapsedWidth="80px"
           width="100%"
           className="col-12 fw-bold menu-items"
-          style={{ fontSize: "14px", color: themeBuilder?.sidebarTextColor }}
+          style={{ fontSize: "14px", color: "black" }}
         >
-          <div className="d-flex justify-content-center p-1 pt-4">
-            <img
-              src={Images.tanmeyaLogo}
-              alt="logo"
-              style={{ marginBottom: "20px" }}
-            />
+          <div
+            className="d-flex justify-content-center p-3"
+            style={{ backgroundColor: "#FCFCFC" }}
+          >
+            <img src={Images.finovaLogo} alt="logo" />
           </div>
-
           <Menu>
             {sidebarItems.map((item: any, index: any) => (
-              <>
-                <React.Fragment key={index}>
-                  {item.menu ? (
-                    renderSubmenu(item)
-                  ) : (
-                    <>
-                      <div className="menu-items">
-                        <Link
-                          to={`${item.Link}`}
-                          style={{
-                            color: themeBuilder?.sidebarTextColor,
-                            textDecoration: "none",
-                          }}
-                        >
-                          <MenuItem
-                            active={item.label === activeBar}
-                            // onClick={() => {
-                            //   dispatch(authSlice.actions.toggleSidebar());
-                            //   onSmash(item.label);
-                            // }}
-                            prefix={
-                              <img
-                                width={16}
-                                height={16}
-                                src={item.img ? item.img : Images.BlackIcon}
-                                style={{ background: "none" }}
-                              />
-                            }
-                          >
-                            {item.label}
-                          </MenuItem>
-                        </Link>
-                      </div>
-                    </>
-                  )}
-                </React.Fragment>
-              </>
+              <React.Fragment key={index}>
+                {item.menu ? (
+                  renderSubmenu(item)
+                ) : (
+                  <div className="menu-items">
+                    <Link
+                      to={`${item.Link}`}
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "700",
+                        color: "black",
+                        textDecoration: "none",
+                      }}
+                      className={item.label === activeBar ? "active" : ""}
+                    >
+                      <MenuItem
+                        active={item.label === activeBar}
+                        onClick={() => onSmash(item.label)}
+                        prefix={
+                          <img
+                            width={20}
+                            height={20}
+                            src={item.img ? item.img : Images.BlackIcon}
+                            style={{ background: "none" }}
+                          />
+                        }
+                      >
+                        {item.label}
+                      </MenuItem>
+                    </Link>
+                  </div>
+                )}
+              </React.Fragment>
             ))}
           </Menu>
         </Sidebar>
@@ -238,9 +251,7 @@ const DasbhboardSidebar = () => {
             <img src={Images.errorEmoji} alt="" />
           </div>
           {fullscreenError}
-          <button className="retry-button mt-3" onClick={handleRetry}>
-            Reload
-          </button>
+          <button className="retry-button mt-3">Reload</button>
         </div>
       )}
 
@@ -248,4 +259,5 @@ const DasbhboardSidebar = () => {
     </>
   );
 };
+
 export default DasbhboardSidebar;

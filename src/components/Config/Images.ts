@@ -36,7 +36,7 @@ import LaFile from "../../assets/images/la_file-in.png";
 import OrangeIcon from "../../assets/images/la_file-i.png";
 import LineIcon from "../../assets/images/la_file-.png";
 import errorEmoji from "../../assets/images/errorEmoji.png";
-
+import finovaLogo from "../../assets/images/FinovaLogo.png";
 export const Images = {
   errorEmoji,
   callIcon,
@@ -75,5 +75,5 @@ export const Images = {
   LaFile,
   OrangeIcon,
   LineIcon,
-  tanmeyaLogo,
+  tanmeyaLogo,finovaLogo
 };
